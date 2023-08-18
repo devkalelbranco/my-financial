@@ -1,3 +1,4 @@
+import { IsEmail, IsNotEmpty } from "class-validator";
 import { Wallet } from "src/wallets/entities/wallet.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -7,9 +8,11 @@ export class User {
     id:number;
 
     @Column()
+    @IsNotEmpty()
     name:string;
 
     @Column()
+    @IsEmail()
     email:string;
 
     @Column({default: true})
