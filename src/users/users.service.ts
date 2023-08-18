@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { FindUserDto } from './dto/find-user.dto';
 import { _ } from 'lodash';
 import { validate } from 'class-validator';
@@ -24,7 +24,14 @@ export class UsersService {
       throw new Error(Object.values(errors[0].constraints)[0])
     } 
     
-    this.userRepository.save(user);
+    try {
+      await this.userRepository.save(user);
+    } catch (error) {
+      if(error instanceof QueryFailedError){
+        throw new Error('Erro de banco de dados ' + error.message)
+      }
+      throw new Error('Erro interno');
+    }
     return createUserDto;
   }
 
