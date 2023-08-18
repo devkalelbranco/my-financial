@@ -4,6 +4,7 @@ import { UpdateWalletDto } from './dto/update-wallet.dto';
 import { Wallet } from './entities/wallet.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { validate } from 'class-validator';
 
 @Injectable()
 export class WalletsService {
@@ -13,8 +14,15 @@ export class WalletsService {
     private walletRepository:Repository<Wallet>){}
 
   async create(createWalletDto: CreateWalletDto) {
-      const result:Wallet = await this.walletRepository.save(createWalletDto);
-      return new CreateWalletDto().assign(result);
+      try {
+        const errors = await validate(new CreateWalletDto().assign(createWalletDto));
+        if(errors.length > 0) throw new Error(Object.values(errors[0].constraints)[0]);
+
+        const result:Wallet = await this.walletRepository.save(createWalletDto);
+        return new CreateWalletDto().assign(result);
+      } catch (error) {
+        throw new Error(error.message);
+      }
   }
 
   findByUser(userId:number){

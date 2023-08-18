@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { WalletsService } from './wallets.service';
 import { CreateWalletDto } from './dto/create-wallet.dto';
 import { UpdateWalletDto } from './dto/update-wallet.dto';
@@ -8,8 +8,12 @@ export class WalletsController {
   constructor(private readonly walletsService: WalletsService) {}
 
   @Post()
-  create(@Body() createWalletDto: CreateWalletDto) {
-    return this.walletsService.create(createWalletDto);
+  async create(@Body() createWalletDto: CreateWalletDto) {
+    try {
+      return await this.walletsService.create(createWalletDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
   }
 
   @Get(':userId')

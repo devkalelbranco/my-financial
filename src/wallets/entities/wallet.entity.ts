@@ -12,7 +12,6 @@ export class Wallet {
     description:string;
 
     @ManyToOne(() => User, (user) => user.wallets,{nullable: false})
-    @IsNotEmptyObject()
     user:User;
 
 }
