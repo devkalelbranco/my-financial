@@ -15,7 +15,7 @@ export class Wallet {
     @ManyToOne(() => User, (user) => user.wallets,{nullable: false})
     user:User;
 
-    @OneToMany(() => Transaction, (wallet) => wallet.id, {nullable: false})
+    @OneToMany(() => Transaction, (transaction) => transaction.wallet, {nullable: false})
     transactions:Transaction[];
 
 }

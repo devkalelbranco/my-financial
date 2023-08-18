@@ -17,8 +17,8 @@ export class WalletsController {
   }
 
   @Get(':userId')
-  findByUser(@Param("userId") userId:number) {
-    return this.walletsService.findByUser(userId);
+  async findByUser(@Param("userId") userId:number) {
+    return await this.walletsService.findByUser(userId);
   }
 
   @Get(':id')

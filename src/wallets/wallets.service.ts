@@ -5,6 +5,7 @@ import { Wallet } from './entities/wallet.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { validate } from 'class-validator';
+import { FindWalletDto } from './dto/find-wallet.dto';
 
 @Injectable()
 export class WalletsService {
@@ -25,8 +26,9 @@ export class WalletsService {
       }
   }
 
-  findByUser(userId:number){
-    return this.walletRepository.find({where: {user: {id : userId}}})
+  async findByUser(userId:number){
+    let wallets:Wallet[] = await this.walletRepository.find({where: {user: {id : userId}}, relations:{user: true, transactions: true}})
+    return wallets.map(item => new FindWalletDto().assign(item))
   }
 
   findAll() {
