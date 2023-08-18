@@ -8,14 +8,12 @@ export class User {
     id:number;
 
     @Column()
-    @IsNotEmpty()
     name:string;
 
-    @Column({unique: true})
-    @IsEmail()
+    @Column({unique: true, nullable: false})
     email:string;
 
-    @Column({default: true})
+    @Column({default: true, nullable: false})
     isActive:boolean;
 
     @OneToMany(() => Wallet, wallet => wallet.user)

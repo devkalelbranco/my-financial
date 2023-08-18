@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { QueryFailedError, Repository } from 'typeorm';
+import { DeleteResult, QueryFailedError, Repository } from 'typeorm';
 import { FindUserDto } from './dto/find-user.dto';
 import { _ } from 'lodash';
 import { validate } from 'class-validator';
@@ -18,7 +18,7 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto):Promise<CreateUserDto> {
-    const user = Object.assign(new User(), createUserDto);
+    const user = Object.assign(new CreateUserDto(), createUserDto);
     const errors = await validate(user);
     if(errors.length > 0){
       throw new Error(Object.values(errors[0].constraints)[0])
@@ -53,7 +53,12 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number):Promise<boolean> {
+    try {
+      const result:DeleteResult = await this.userRepository.delete(id);
+      return (result.affected > 0);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
