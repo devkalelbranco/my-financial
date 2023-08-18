@@ -1,6 +1,7 @@
 import { IsNotEmptyObject } from "class-validator";
+import { Transaction } from "src/transactions/entities/transaction.entity";
 import { User } from "src/users/entities/user.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Wallet {
@@ -13,5 +14,8 @@ export class Wallet {
 
     @ManyToOne(() => User, (user) => user.wallets,{nullable: false})
     user:User;
+
+    @OneToMany(() => Transaction, (wallet) => wallet.id, {nullable: false})
+    transactions:Transaction[];
 
 }
